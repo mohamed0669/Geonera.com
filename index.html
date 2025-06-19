@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <title>منصة GeoNest</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="منصة GeoNest – بيانات وأدوات نظم المعلومات الجغرافية GIS باللغة العربية">
+  <meta name="keywords" content="GIS, نظم المعلومات الجغرافية, بيانات مكانية, خرائط, تحميل GIS">
+  <style>
+    body { margin:0; font-family:'Segoe UI', Tahoma, sans-serif; background:#fdfdfd; color:#222; direction:rtl; display:flex; transition:all .3s; }
+    .dark-mode { background:#121212; color:#eee; }
+    .sidebar { width:200px; background:#2c3e50; color:#fff; padding:15px; height:100vh; position:fixed; right:0; top:0; transition:transform .3s; z-index:1000; }
+    .sidebar.hide { transform:translateX(100%); }
+    .sidebar h3 { margin-bottom:10px; font-size:16px; border-bottom:1px solid #555; padding-bottom:5px; }
+    .sidebar a { display:block; color:#fff; padding:8px 0; text-decoration:none; border-bottom:1px solid #444; }
+    .sidebar a:hover { color:#1abc9c; }
+    .sidebar-toggle, .dark-toggle { position:fixed; top:10px; padding:6px 10px; border:none; border-radius:4px; cursor:pointer; font-size:12px; z-index:1100; }
+    .sidebar-toggle { right:10px; background:#3498db; color:#fff; }
+    .dark-toggle { right:80px; background:#555; color:#fff; display:flex; align-items:center; gap:6px; }
+    .main-container { flex:1; margin-right:200px; padding:15px; transition:margin-right .3s; }
+    .full-width { margin-right:0 !important; }
+    .header { display:flex; justify-content:space-between; align-items:center; background:#2c3e50; color:#fff; padding:10px; }
+    .header img { height:45px; }
+    .brand-name { font-size:20px; font-weight:bold; }
+    h2 { background:#3498db; color:#fff; padding:8px; border-radius:4px; margin-top:30px; }
+    .panel { background:#fff; padding:12px; border-radius:4px; margin-bottom:20px; border:1px solid #ccc; }
+    table { width:100%; border-collapse:collapse; font-size:13px; }
+    th, td { padding:8px; border:1px solid #ccc; text-align:right; }
+    th { background:#f4f4f4; }
+    tr:nth-child(even) { background:#f9f9f9; }
+    .btn { padding:4px 8px; border-radius:4px; color:#fff; text-decoration:none; font-size:12px; margin-left:4px; }
+    .download { background:#007bff; }
+    .info { background:#28a745; }
+    .dark-mode .panel, .dark-mode table, .dark-mode th, .dark-mode td { background:#1e1e2f; color:#eee; border-color:#444; }
+    footer { text-align:center; padding:10px; background:#2c3e50; color:#fff; font-size:13px; }
+    footer a { color:#1abc9c; text-decoration:none; margin:0 8px; }
+    form input, form textarea { width:100%; box-sizing:border-box; font-size:13px; padding:6px; margin-bottom:8px; }
+    form button { background:#3498db; color:#fff; padding:8px; border:none; border-radius:4px; cursor:pointer; }
+  </style>
+</head>
+<body>
+
+  <div class="sidebar" id="sidebar">
+    <h3>القائمة</h3>
+    <a onclick="actionAndHide(showSections)">🗺 بيانات & برامج GIS</a>
+  </div>
+  <button class="sidebar-toggle" onclick="toggleSidebar()">☰ القائمة</button>
+  <button class="dark-toggle" onclick="toggleDarkMode()"><span id="modeIcon">🌙</span> الوضع الليلي</button>
+
+  <div class="main-container" id="main"><div>
+    <div class="header">
+      <!-- تم تحديث مسار الصورة لـ GeoNest -->
+      <img src="https://i.ibb.co/gbYz7jqg/nest.png" alt="شعار GeoNest">
+      <div class="brand-name">منصة GeoNest</div>
+      <!-- تم تحديث مسار الصورة لـ m -->
+      <img src="https://i.ibb.co/QFCKwR4x/m.png" alt="شعار جهة أخرى">
+    </div>
+
+    <div id="content" style="display:none;"></div>
+
+    <div id="page-privacy" class="panel" style="display:none;">
+      <h2>سياسة الخصوصية</h2>
+      <p>نحترم خصوصيتك ولا نجمع بيانات شخصية بدون موافقتك.</p>
+    </div>
+
+    <div id="page-contact" class="panel" style="display:none;">
+      <h2>اتصل بنا</h2>
+      <form>
+        <input type="text" placeholder="الاسم الكامل" required>
+        <input type="email" placeholder="البريد الإلكتروني" required>
+        <input type="tel" placeholder="رقم الهاتف">
+        <textarea rows="4" placeholder="رسالتك"></textarea>
+        <button type="submit">إرسال</button>
+      </form>
+    </div>
+
+    <div id="page-about" class="panel" style="display:none;">
+      <h2>من نحن</h2>
+      <p>GeoNest منصة عربية تشمل بيانات وأدوات GIS بروابط تحميل وشروحات فيديو.</p>
+    </div>
+
+    <footer>
+      &copy; 2025 منصة GeoNest •
+      <a onclick="showPage('privacy')">سياسة الخصوصية</a> •
+      <a onclick="showPage('contact')">اتصل بنا</a> •
+      <a onclick="showPage('about')">من نحن</a>
+    </footer>
+  </div></div>
+
+  <script>
+    const data = [
+      {
+        title: "🌍 مواقع تحميل بيانات GIS",
+        rows: [
+          { name: "Earth Explorer (USGS)", use: "تنزيل مرئيات فضائية وDEM", url: "https://earthexplorer.usgs.gov/", info: "https://youtu.be/s6u7dNVnxgU?si=96SFH3uJkuZ2vnJD" },
+          { name: "bbbike", use: "تنزيل بيانات فيكتور – طرق ومدن", url: "https://extract.bbbike.org/", info: "" },
+          { name: "OpenStreetMap", use: "بيانات فيكتور: طرق، مباني", url: "https://www.openstreetmap.org/", info: "https://youtu.be/ddaqpW_ae3M?si=1cvNcFAmFqLOH4ta" },
+          { name: "NASA POWER", use: "بيانات مناخية: حرارة، رطوبة، أمطار، رياح", url: "https://power.larc.nasa.gov/data-access-viewer/", info: "https://youtu.be/FlbnBWhAN8o" },
+          { name: "Open Topography", use: "تحميل بيانات LIDAR ونماذج ارتفاع", url: "https://portal.opentopography.org/datasets", info: "https://youtu.be/ssxQ_WyQmc4?si=Hp6wt5SAjrnA2igQ" },
+          { name: "Diva GIS", use: "بيانات مكانية لأي بلد", url: "https://www.diva-gis.org/Data", info: "https://youtu.be/lvEoAXdyago?si=67JzgWS-2wrBFkzf" },
+          { name: "ASF Alaska", use: "بيانات استشعار عن بعد (طرق، سكك، مناخ)", url: "https://search.asf.alaska.edu/", info: "https://youtu.be/t6cdVbdD8v4?si=j8AmJNBxu7JEH4pF" },
+          { name: "Global Solar Atlas", use: "بيانات الإشعاع الشمسي", url: "https://globalsolaratlas.info/download", info: "https://youtu.be/THqgFpaIUsg?si=-M-95nKDSbJD-mFT" },
+          { name: "Earthquake USGS", use: "بيانات الزلازل", url: "https://earthquake.usgs.gov/earthquakes/search", info: "https://youtu.be/kVVAo2MtLuk?si=YJwt7C7fthX-yd8a" },
+          { name: "WorldClim", use: "بيانات مناخية متنوعة", url: "https://www.worldclim.org/data/index.html", info: "https://youtu.be/EncMjy-VC_M?si=Ce4MFDFpTQY_VF1Y" },
+          { name: "GIS4U", use: "بيانات مكانية متنوعة", url: "https://gis-for-you.blogspot.com/2017/01/download-shapfile-soil-map-of-world-125.html", info: "" }
+        ]
+      },
+      {
+        title: "🛰️ أدوات تحميل الصور الجوية",
+        rows: [
+          { name: "Mapp Puzzle", use: "تحميل صور جوية بجودة عالية", url: "https://www.mediafire.com/file/jvmytgitxpaecxn/mappuzzle.rar", info: "https://youtu.be/OKYgCBzEejo?si=o5YdKZ1elV_xVv0k" },
+          { name: "Terra Incognita", use: "تنزيل صور عالية الجودة", url: "http://www.mediafire.com/file/37kmiyiy85nmmtp/InstallTI245.exe/file", info: "https://youtu.be/Z7Iv1lwg9uo?si=Ia4naZcLw1SqoNTc" },
+          { name: "SAS Planet", use: "عرض وتحميل خرائط فضائية بدقة", url: "https://www.mediafire.com/file/mohcbfvt45esyf0/SAS.Planet.Nightly.240828.10624%28sasplanet.geojamal.com%29.zip/file", info: "https://youtu.be/_TigY5FyzxI?si=1Z8A5llx6W1xF5qZ" }
+        ]
+      },
+      {
+        title: "🗺️ برامج نظم المعلومات الجغرافية (GIS)",
+        rows: [
+          { name: "ArcGIS Pro", use: "تحليل بيانات ثلاثية الأبعاد", url: "http://www.mediafire.com/file/cfye8jwwm5mw31a/ArcGIS_Desktop_10.8_By_GeoPoint_IRAQ.rar/file", info: "https://youtu.be/kgV-AENc1hQ?si=6Iuok1C149xDGHRi" },
+          { name: "ArcMap", use: "إنشاء خرائط GIS", url: "http://www.mediafire.com/file/cfye8jwwm5mw31a/ArcGIS_Desktop_10.8_By_GeoPoint_IRAQ.rar/file", info: "https://youtu.be/JfnYHVk9ME8?si=77NPLhaw5ICTudk6" },
+          { name: "Google Earth Pro", use: "استعراض وتحميل KML/KMZ", url: "http://www.mediafire.com/file/of12n1zs9jyycen/Google_Earth_Pro-By_GeoPoint_IRAQ.rar/file", info: "https://youtube.com/playlist?list=PLi5-9SH2ORG33oQuhhG_5A2MRGPBUoXzx&si=LFzyvWJy36mbw4dN" },
+          { name: "Erdas Imagine", use: "تصنيف وتحليل صور فضائية", url: "https://getintopc.com/softwares/development/hexagon-erdas-imagine-foundation-2015-free-download/", info: "https://youtube.com/playlist?list=PLsi1NoZgHLduVpWLpXFvSXjpad9bp0PBR&si=L1X6FaDSfxvZ52aP" },
+          { name: "ENVI", use: "تحليل صور الأقمار الصناعية", url: "https://www.mediafire.com/folder/v44gbj7jtcmjf/envi53", info: "https://youtube.com/playlist?list=PL4U13xnArgP6uCDiyOBq8rFYPBkyVvGyM&si=dh6N2CpieFuLELK" },
+          { name: "Global Mapper", use: "تحليل بيانات GIS", url: "https://getintopc.com/softwares/navigation/global-mapper-20-free-download/", info: "https://youtu.be/t7M5tZU2Nos?si=mOlJkNydU7gGjahC" },
+          { name: "Surfer", use: "خرائط كنتورية وتحليل جيولوجي", url: "https://www.mediafire.com/folder/v44gbj7jtcmjf/envi53", info: "https://youtube.com/playlist?list=PLi5-9SH2ORG1h5VKfAiukaOn7Y3ic0364&si=xE_Bx16mXcqof2Qk" },
+          { name: "Blender", use: "تحليل ثلاثي الأبعاد", url: "https://www.blender.org/download/", info: "https://youtu.be/0YfyB-Wiuq0?si=OPpjLdevgPO3h9QH" },
+          { name: "QGIS", use: "تحليل مكاني مفتوح المصدر", url: "https://www.qgis.org/en/site/forusers/download.html", info: "https://youtu.be/_sNw9a4eRp4?si=Wu357PgGcgFxDpw-" }
+        ]
+      },
+      {
+        title: "📐 البرامج المساحية",
+        rows: [
+          { name: "AutoCAD 2025", use: "الرسم الإنشائي والمعماري", url: "https://pesktop.com/windows/2025-autodesk-autocad", info: "https://www.youtube.com/playlist?list=PLSTV7GeDHLzjnKtZbvY8hth_QCYg2nzqV" },
+          { name: "Civil 3D 2022", use: "الاعمال المساحية والطرق", url: "https://www.mediafire.com/file/71xjeolo524aw1b/civil+2022.rar/file", info: "https://www.youtube.com/playlist?list=PLSTV7GeDHLzhUIRcCDc9xFKYfv154UQtb" },
+          { name: "Sokkia Link", use: "تحويل بيانات من الأجهزة المساحية", url: "https://www.mediafire.com/file/ryps2mcsql5pc6t/SOKKIA_Link.rar/file", info: "https://www.youtube.com/watch?v=DhL27hVmp9g" },
+          { name: "TPC", use: "معالجة GPS", url: "#", info: "https://youtu.be/1Xw4pqPNOiQ" }
+        ]
+      }
+    ];
+
+    function showSections() {
+      hideAll();
+      const content = document.getElementById("content");
+      content.style.display = "block";
+      data.forEach(sec => {
+        const h2 = document.createElement("h2");
+        h2.textContent = sec.title;
+        const panel = document.createElement("div");
+        panel.className = "panel";
+        const tbl = document.createElement("table");
+        tbl.innerHTML = `
+          <thead>
+            <tr><th>الاسم</th><th>الاستخدام</th><th>تحميل</th><th>شرح</th></tr>
+          </thead>
+          <tbody>
+            ${sec.rows.map(r => `
+              <tr>
+                <td>${r.name}</td>
+                <td>${r.use}</td>
+                <td><a href="${r.url}" target="_blank" class="btn download">تحميل</a></td>
+                <td><a href="${r.info}" target="_blank" class="btn info">شرح</a></td>
+              </tr>`).join("")}
+          </tbody>`;
+        panel.appendChild(tbl);
+        content.appendChild(h2);
+        content.appendChild(panel);
+      });
+    }
+
+    function toggleSidebar() {
+      document.getElementById("sidebar").classList.toggle("hide");
+      document.getElementById("main").classList.toggle("full-width");
+    }
+
+    function toggleDarkMode() {
+      document.body.classList.toggle("dark-mode");
+      document.getElementById("modeIcon").textContent = document.body.classList.contains("dark-mode") ? "☀️" : "🌙";
+      localStorage.setItem("dark-mode", document.body.classList.contains("dark-mode") ? "enabled" : "disabled");
+    }
+
+    function showPage(id) {
+      hideAll();
+      document.getElementById("page-"+id).style.display = "block";
+    }
+
+    function actionAndHide(fn) {
+      fn();
+      toggleSidebar();
+    }
+
+    function hideAll() {
+      document.getElementById("content").style.display = "none";
+      document.getElementById("content").innerHTML = "";
+      ["page-privacy","page-contact","page-about"].forEach(id => document.getElementById(id).style.display = "none");
+    }
+
+    if (localStorage.getItem("dark-mode")==="enabled") toggleDarkMode();
+  </script>
+</body>
+</html>
+
